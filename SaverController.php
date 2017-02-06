@@ -8,11 +8,13 @@
 
 namespace Saver;
 
+use Saver\Services\CurlUploadService;
 
-class SaverCore
+class SaverController
 {
     public function saveFile($url)
     {
-
+        $service = new CurlUploadService($url);
+        $service->uploadFile();
     }
 }

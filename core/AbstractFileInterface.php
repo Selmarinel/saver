@@ -11,5 +11,5 @@ namespace Saver\Core;
 
 interface AbstractFileInterface
 {
-    public function saveFile($fileName);
+    public function saveFile();
 }

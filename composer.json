@@ -3,9 +3,9 @@
   "description": "TEST UNIT",
   "license": "MIT",
   "version": "2.1",
-  "authors": [
-    {
-      "name": "Selmarinel Nerdjin",
+      "authors": [
+        {
+          "name": "Selmarinel Nerdjin",
       "email": "selmarinel@gmail.com",
       "role": "Developer"
     }
@@ -14,19 +14,20 @@
     "php": ">=5.6.0",
     "monolog/monolog": "^1.0",
     "vlucas/phpdotenv" :"*",
-    "hoa/exception" :  "~1.0",
-    "curl/curl": "^1.5"
+    "php-curl-class/php-curl-class":"*"
   },
   "require-dev": {
     "php": ">=5.6.0",
     "monolog/monolog": "^1.0",
     "vlucas/phpdotenv" :"*",
-    "hoa/exception" :  "~1.0",
-    "curl/curl": "^1.5"
+    "php-curl-class/php-curl-class":"*"
   },
   "autoload": {
     "psr-4": {
-      "Saver\\Core\\": "core"
+      "Saver\\Core\\": "core",
+      "Saver\\Objects\\": "objects",
+      "Saver\\Services\\": "services",
+      "Saver\\Exceptions\\": "exceptions"
     }
   },
   "stable": "master",

@@ -11,8 +11,58 @@ namespace Saver\Core;
 
 class LocalFile extends AbstractFile implements AbstractFileInterface
 {
-    public function saveFile($fileName)
+    protected $fileName;
+
+    /**
+     * @return mixed
+     */
+    public function getFileName()
     {
-        // TODO: Implement saveFile() method.
+        return $this->fileName;
+    }
+
+    /**
+     * @param mixed $fileName
+     */
+    public function setFileName($fileName)
+   {
+        $this->fileName = $fileName;
+    }
+
+    protected $mime;
+    protected $fileHandler;
+
+    public function init()
+    {
+        $this->setFileHandler();
+    }
+
+    public function complete()
+    {
+        if ($this->fileHandler) {
+            fclose($this->fileHandler);
+        }
+    }
+
+    public function setFileHandler()
+    {
+        $this->fileHandler = fopen($this->fileName, "w+");
+    }
+
+    public function getFileHandler()
+    {
+        return $this->fileHandler;
+    }
+
+    public function saveFile()
+    {
+        if (!$this->fileName) {
+
+        }
+    }
+
+    public function save()
+    {
+
     }
 }

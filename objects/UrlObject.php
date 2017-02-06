@@ -6,10 +6,10 @@
  * Time: 18:17
  */
 
-namespace Saver\Core;
+namespace Saver\Objects;
 
 
-class CurlObject
+abstract class UrlObject
 {
 
 }

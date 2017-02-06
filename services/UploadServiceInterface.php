@@ -11,5 +11,13 @@ namespace Saver\Services;
 
 interface UploadServiceInterface
 {
-    public function uploadFile($url);
+    /**
+     * @return mixed
+     */
+    public function uploadFile();
+
+    /**
+     * @return mixed
+     */
+    public function init();
 }

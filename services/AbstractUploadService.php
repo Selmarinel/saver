@@ -8,12 +8,11 @@
 
 namespace Saver\Services;
 
+use Dotenv\Dotenv;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 use Saver\Exceptions\ExceptionInterface;
-use Saver\Exceptions\HoaException;
-use Saver\Exceptions\MyException;
 
 /**
  * Class AbstractUploadService
@@ -28,32 +27,28 @@ abstract class AbstractUploadService
     {
         $this->url = $url;
         $this->log = new Logger("upload");
-        $this->log->pushHandler(new StreamHandler(__DIR__.'/upload.log', Logger::WARNING));
+        /**
+         * Todo: Fix ENV and Configs
+         */
+        $dotenv = new Dotenv(__DIR__ . "\..");
+        $dotenv->load();
+
+        $this->log->pushHandler(new StreamHandler(getenv('LOG_PATH') . '/upload.log', Logger::WARNING));
     }
 
-    private static $mime = [
+    protected static $mime = [
         'image/png' => 'png',
-        'image/jpeg' => 'jpeg',
+        'image/jpeg' => 'jpg',
         'image/gif' => 'gif'
     ];
 
-    /**
-     * @param $mime
-     * @throws \Exception
-     */
     protected function checkMimeType($mime)
     {
-        try {
-            if (!in_array($mime, array_keys(self::$mime))) {
-                throw new HoaException("Unsupported mime type");
-            }
-        } catch (HoaException $hoaException){
-            $this->logAction($hoaException);
-            throw new HoaException($hoaException->getMessage());
-        } catch (MyException $exception){
-            $this->logAction($exception);
-            throw new MyException($exception->getMessage());
+        if (!in_array($mime, array_keys(self::$mime))) {
+            return false;
         }
+        return true;
+
     }
 
     protected function logAction(ExceptionInterface $exception)

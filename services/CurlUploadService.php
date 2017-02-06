@@ -8,71 +8,97 @@
 
 namespace Saver\Services;
 
-use Saver\Exceptions\HoaException as Exception;
+use Curl\Curl;
+use Saver\Core\LocalFile;
 use Saver\Exceptions\MyException as MyException;
+use Saver\Objects\CurlObject;
 
+/**
+ * Class CurlUploadService
+ * @package Saver\Services
+ */
 class CurlUploadService extends AbstractUploadService implements UploadServiceInterface
 {
-    private $ch;
-    private $mime;
-    private $info;
 
-    const SUCCESS = 200;
-
-    protected $options = [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HEADER => true,
-        CURLOPT_NOBODY => true
-    ];
+    protected $url;
+    /**
+     * @var CurlObject
+     */
+    protected $curlObject;
 
     public function __construct($url)
     {
         parent::__construct($url);
+        $this->init();
+        $this->url = $url;
     }
 
+    /**
+     * @throws MyException
+     */
     public function init()
     {
         try {
-            $this->ch = curl_init($this->url);
-            curl_setopt_array($this->ch, $this->options);
-            curl_exec($this->ch);
-            $this->info = curl_getinfo($this->ch);
-
-        } catch (MyException $exception){
+            $this->curlObject = new CurlObject();
+        } catch (MyException $exception) {
             $this->logAction($exception);
             throw new MyException($exception->getMessage());
         }
     }
 
-    public function uploadFile($url)
+    /**
+     * @throws MyException
+     */
+    public function checkUrl()
     {
-
+        $this->curlObject->get($this->url);
+        if ($this->curlObject->error) {
+            $this->curlObject->close();
+            throw new MyException($this->curlObject->errorMessage, $this->curlObject->errorCode);
+        }
+        if (!$this->checkMimeType($this->curlObject->getMime())) {
+            $this->curlObject->close();
+            throw new MyException("Unsupported mime/type");
+        }
+        return true;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function checkFileFromUrl()
+    public function saveFile()
+    {
+        /**
+         * Todo Change path to save
+         */
+        try {
+            $fileName = __DIR__ . '/../tmp/' . md5(time()) . "." . self::$mime[$this->curlObject->getMime()];
+            $file = new LocalFile();
+            $file->setFileName($fileName);
+            $file->init();
+            $this->curlObject->setOpts([
+                CURLOPT_URL => $this->url,
+                CURLOPT_FILE => $file->getFileHandler(),
+                CURLOPT_REFERER => $this->url,
+                CURLOPT_AUTOREFERER => 1,
+                CURLOPT_HEADER => false,
+                CURLOPT_NOBODY => false,
+            ]);
+            $this->curlObject->exec();
+            $this->curlObject->close();
+        } catch (MyException $exception){
+            throw new MyException($exception->getMessage());
+        }
+    }
+
+    public function uploadFile()
     {
         try {
-            curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($this->ch, CURLOPT_HEADER, true);
-            curl_setopt($this->ch, CURLOPT_NOBODY, true);
-            curl_exec($this->ch);
-            if (curl_getinfo($this->ch, CURLINFO_HTTP_CODE) != self::SUCCESS) {
-                curl_close($this->ch);
-                throw new Exception("Returned with fail");
-            }
-            $this->mime = curl_getinfo($this->ch, CURLINFO_CONTENT_TYPE);
-            curl_close($this->ch);
-        } catch (Exception $hoaException){
-            curl_close($this->ch);
-            $this->logAction($hoaException);
-            throw new Exception($hoaException->getMessage());
-        } catch (MyException $exception){
-            curl_close($this->ch);
+            $this->checkUrl();
+            $this->saveFile();
+        } catch (MyException $exception) {
             $this->logAction($exception);
-            throw new MyException($exception->getMessage());
+            $this->curlObject->close();
+        } catch (\Exception $exception) {
+            var_dump($exception->getMessage());
+            $this->curlObject->close();
         }
     }
 

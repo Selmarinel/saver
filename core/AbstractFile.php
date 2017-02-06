@@ -8,17 +8,6 @@
 
 namespace Saver\Core;
 
-use Monolog\Logger;
-
 class AbstractFile
 {
-    public function saveFile($fileName)
-    {
-        // TODO: Implement saveFile() method.
-    }
-
-    protected function log()
-    {
-
-    }
 }
