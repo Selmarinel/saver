@@ -1,6 +1,7 @@
 <?php
 
 namespace Saver\Core;
+use Hoa\Exception\Exception;
 
 /**
  * Class SaverFile
@@ -59,7 +60,7 @@ class SaverFile
         }
         $mime = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
         if (!in_array($mime, array_keys(self::$mime))) {
-            throw new \Exception("Unsupported mime type");
+            throw new Exception("Unsupported mime type");
         }
         curl_close($ch);
         $ch = curl_init();

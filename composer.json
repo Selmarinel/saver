@@ -13,12 +13,16 @@
   "require": {
     "php": ">=5.6.0",
     "monolog/monolog": "^1.0",
-    "vlucas/phpdotenv" :"*"
+    "vlucas/phpdotenv" :"*",
+    "hoa/exception" :  "~1.0",
+    "curl/curl": "^1.5"
   },
   "require-dev": {
     "php": ">=5.6.0",
     "monolog/monolog": "^1.0",
-    "vlucas/phpdotenv" :"*"
+    "vlucas/phpdotenv" :"*",
+    "hoa/exception" :  "~1.0",
+    "curl/curl": "^1.5"
   },
   "autoload": {
     "psr-4": {

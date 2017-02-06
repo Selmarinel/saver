@@ -11,7 +11,6 @@ namespace Saver;
 
 class SaverCore
 {
-
     public function saveFile($url)
     {
 
