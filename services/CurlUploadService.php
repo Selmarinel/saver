@@ -8,9 +8,8 @@
 
 namespace Saver\Services;
 
-use Curl\Curl;
 use Saver\Core\LocalFile;
-use Saver\Exceptions\MyException as MyException;
+use Saver\Exceptions\CurlUploadException as UploadException;
 use Saver\Objects\CurlObject;
 
 /**
@@ -26,39 +25,42 @@ class CurlUploadService extends AbstractUploadService implements UploadServiceIn
      */
     protected $curlObject;
 
+    /**
+     * CurlUploadService constructor.
+     * @param $url
+     */
     public function __construct($url)
     {
         parent::__construct($url);
-        $this->init();
         $this->url = $url;
+        $this->init();
     }
 
     /**
-     * @throws MyException
+     * @throws UploadException
      */
     public function init()
     {
         try {
             $this->curlObject = new CurlObject();
-        } catch (MyException $exception) {
-            $this->logAction($exception);
-            throw new MyException($exception->getMessage());
+        } catch (UploadException $exception) {
+            throw $exception;
         }
     }
 
     /**
-     * @throws MyException
+     * @throws UploadException
      */
     public function checkUrl()
     {
         $this->curlObject->get($this->url);
         if ($this->curlObject->error) {
             $this->curlObject->close();
-            throw new MyException($this->curlObject->errorMessage, $this->curlObject->errorCode);
+            throw new UploadException($this->curlObject->errorMessage, $this->curlObject->errorCode);
         }
         if (!$this->checkMimeType($this->curlObject->getMime())) {
             $this->curlObject->close();
-            throw new MyException("Unsupported mime/type");
+            throw new UploadException("Unsupported mime/type");
         }
         return true;
     }
@@ -83,8 +85,8 @@ class CurlUploadService extends AbstractUploadService implements UploadServiceIn
             ]);
             $this->curlObject->exec();
             $this->curlObject->close();
-        } catch (MyException $exception){
-            throw new MyException($exception->getMessage());
+        } catch (UploadException $exception){
+            throw $exception;
         }
     }
 
@@ -93,12 +95,9 @@ class CurlUploadService extends AbstractUploadService implements UploadServiceIn
         try {
             $this->checkUrl();
             $this->saveFile();
-        } catch (MyException $exception) {
-            $this->logAction($exception);
+        } catch (UploadException $exception) {
             $this->curlObject->close();
-        } catch (\Exception $exception) {
-            var_dump($exception->getMessage());
-            $this->curlObject->close();
+            throw $exception;
         }
     }
 

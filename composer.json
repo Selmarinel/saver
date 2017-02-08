@@ -24,10 +24,12 @@
   },
   "autoload": {
     "psr-4": {
+      "Saver\\":"",
       "Saver\\Core\\": "core",
       "Saver\\Objects\\": "objects",
       "Saver\\Services\\": "services",
-      "Saver\\Exceptions\\": "exceptions"
+      "Saver\\Exceptions\\": "exceptions",
+      "Saver\\Loggers\\": "loggers"
     }
   },
   "stable": "master",

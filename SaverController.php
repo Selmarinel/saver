@@ -1,20 +1,23 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: selmarinel
- * Date: 06.02.17
- * Time: 16:22
- */
 
 namespace Saver;
 
+use Saver\Exceptions\CurlUploadException;
+use Saver\Exceptions\MyException;
 use Saver\Services\CurlUploadService;
 
 class SaverController
 {
     public function saveFile($url)
     {
-        $service = new CurlUploadService($url);
-        $service->uploadFile();
+        try {
+            $service = new CurlUploadService($url);
+            $service->uploadFile();
+        } catch (CurlUploadException $exception){
+            $exception->setLog();
+            echo $exception->getMessage();
+        } catch (MyException $exception){
+            throw $exception;
+        }
     }
 }

@@ -1,13 +1,33 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: selmarinel
- * Date: 06.02.17
- * Time: 17:06
- */
 
 namespace Saver\Exceptions;
 
-class MyException extends \Exception  implements ExceptionInterface
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Saver\Loggers\MyLoggerInterface;
+
+class MyException extends \Exception implements ExceptionInterface
 {
+    /**
+     * @var MyLoggerInterface
+     */
+    private $log;
+
+    private function getLogPath()
+    {
+        return (getenv('LOG_PATH')) ?: __DIR__ . "/../logs/";
+    }
+
+    protected function setLogger(MyLoggerInterface $logger)
+    {
+        $this->log = $logger;
+        $this->log->pushHandler(new StreamHandler($this->getLogPath() . $this->log->getLogFileName(), Logger::WARNING));
+    }
+
+    public function setLog()
+    {
+        if ($this->log instanceof MyLoggerInterface) {
+            $this->log->log(Logger::WARNING, $this->getMessage());
+        }
+    }
 }

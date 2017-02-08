@@ -1,18 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: selmarinel
- * Date: 06.02.17
- * Time: 16:42
- */
 
 namespace Saver\Services;
-
-use Dotenv\Dotenv;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
-use Saver\Exceptions\ExceptionInterface;
 
 /**
  * Class AbstractUploadService
@@ -21,19 +9,10 @@ use Saver\Exceptions\ExceptionInterface;
 abstract class AbstractUploadService
 {
     protected $url;
-    private $log;
 
     public function __construct($url)
     {
         $this->url = $url;
-        $this->log = new Logger("upload");
-        /**
-         * Todo: Fix ENV and Configs
-         */
-        $dotenv = new Dotenv(__DIR__ . "\..");
-        $dotenv->load();
-
-        $this->log->pushHandler(new StreamHandler(getenv('LOG_PATH') . '/upload.log', Logger::WARNING));
     }
 
     protected static $mime = [
@@ -49,10 +28,5 @@ abstract class AbstractUploadService
         }
         return true;
 
-    }
-
-    protected function logAction(ExceptionInterface $exception)
-    {
-        $this->log->warning($exception->getMessage());
     }
 }

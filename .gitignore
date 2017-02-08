@@ -11,3 +11,6 @@ vendor
 composer.lock
 .env
 tmp
+index.php
+tmp/
+logs/
