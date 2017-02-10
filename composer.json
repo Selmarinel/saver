@@ -17,15 +17,11 @@
     "php-curl-class/php-curl-class":"*"
   },
   "require-dev": {
-    "php": ">=5.6.0",
-    "monolog/monolog": "^1.0",
-    "vlucas/phpdotenv" :"*",
-    "php-curl-class/php-curl-class":"*"
+    "phpunit/phpunit": "5.5.*"
   },
   "autoload": {
     "psr-4": {
       "Saver\\":"",
-      "Saver\\Core\\": "core",
       "Saver\\Objects\\": "objects",
       "Saver\\Services\\": "services",
       "Saver\\Exceptions\\": "exceptions",

@@ -10,7 +10,7 @@ namespace Saver\Objects;
 
 use Curl\Curl;
 
-class CurlObject extends Curl
+class CurlObject extends Curl implements ObjectInterface
 {
 
     protected $options = [

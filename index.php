@@ -2,9 +2,8 @@
 
 require_once "vendor/autoload.php";
 
-$service = new \Saver\SaverController();
-$service->saveFile($_POST['url']);
-
+$service = new \Saver\Saver(new \Saver\Services\Upload\CurlUploadService( new \Saver\Services\Files\LocalFile()));
+$service->saveFromUrl($_POST['url']);
 
 ?>
 <form method="post">
