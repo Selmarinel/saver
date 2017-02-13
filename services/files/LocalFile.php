@@ -4,17 +4,12 @@ namespace Saver\Services\Files;
 
 class LocalFile extends AbstractFile implements FileInterface
 {
-    /**
-     *
-     */
-    public function init()
+    public function init($path = null)
     {
+        parent::init($path);
         $this->setFileHandler();
     }
 
-    /**
-     *
-     */
     public function complete()
     {
         if ($this->fileHandler) {
@@ -22,30 +17,14 @@ class LocalFile extends AbstractFile implements FileInterface
         }
     }
 
-    /**
-     *
-     */
     private function setFileHandler()
     {
         $this->fileHandler = fopen($this->getFullPath(), "w+");
     }
 
-    /**
-     * @return mixed
-     */
     public function getFileHandler()
     {
         return $this->fileHandler;
-    }
-
-    /**
-     *
-     */
-    public function saveFile()
-    {
-        if (!$this->fileName) {
-
-        }
     }
 
 }

@@ -35,11 +35,8 @@ class CurlUploadService extends AbstractUploadService implements UploadServiceIn
         return false;
     }
 
-    public function saveFile($url, $name)
+    public function saveFile($url, $path = null, $name = null)
     {
-        /**
-         * Todo Change path to save
-         */
         try {
             /**
              * hack
@@ -48,7 +45,7 @@ class CurlUploadService extends AbstractUploadService implements UploadServiceIn
             /***************************************/
 
             $this->fileObject->setFileName($name);
-            $this->fileObject->init();
+            $this->fileObject->init($path);
 
             $this->uploaderObject->setOpts([
                 CURLOPT_URL => $url,
@@ -65,10 +62,10 @@ class CurlUploadService extends AbstractUploadService implements UploadServiceIn
         }
     }
 
-    public function uploadFileFromUrl($url, $name = null)
+    public function uploadFileFromUrl($url, $path = null, $name = null)
     {
         if ($this->checkUrl($url) && $this->checkMime()) {
-            $this->saveFile($url, $name);
+            $this->saveFile($url, $path, $name);
         }
     }
 

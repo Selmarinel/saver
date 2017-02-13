@@ -7,7 +7,7 @@ interface FileInterface
 {
     public function saveFile();
 
-    public function init();
+    public function init($path = null);
 
     public function complete();
 
@@ -20,4 +20,6 @@ interface FileInterface
     public function setMimeType($mime);
 
     public function getFileHandler();
+
+    public function getMimeType();
 }
