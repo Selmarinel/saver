@@ -7,7 +7,7 @@ use Monolog\Handler\HandlerInterface;
 
 class UploadLogger extends Logger implements MyLoggerInterface
 {
-    protected $streamName = "upload";
+    private $streamName = "upload";
 
     public function getStreamName()
     {

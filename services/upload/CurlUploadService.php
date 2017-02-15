@@ -2,30 +2,58 @@
 
 namespace Saver\Services\Upload;
 
+use Saver\Objects\ObjectInterface;
 use Saver\Services\Files\FileInterface;
 use Saver\Objects\CurlObject;
 use Saver\Exceptions\CurlUploadException;
+use Saver\Services\System\SystemInterface;
 use Saver\Services\System\WindowsSystem;
 
-class CurlUploadService extends AbstractUploadService implements UploadServiceInterface
+class CurlUploadService implements UploadServiceInterface
 {
+
+    private static $mime = [
+        'image/png' => 'png',
+        'image/jpeg' => 'jpg',
+        'image/gif' => 'gif'
+    ];
+    /**
+     * @var ObjectInterface
+     */
+    private $uploaderObject;
+    /**
+     * @var FileInterface
+     */
+    private $fileObject;
+    /**
+     * @var SystemInterface
+     */
+    private $fileSystem;
+
     public function __construct(FileInterface $file)
     {
-        parent::__construct($file);
+        $this->fileObject = $file;
         $this->uploaderObject = new CurlObject();
     }
 
-    protected function checkUrl($url)
+    public function uploadFileFromUrl($url, $path = null, $name = null)
+    {
+        if ($this->checkUrl($url) && $this->checkMime()) {
+            $this->saveFile($url, $path, $name);
+        }
+    }
+
+    private function checkUrl($url)
     {
         $this->uploaderObject->get($url);
-        if ($this->uploaderObject->error) {
+        if ($this->uploaderObject->getError()) {
             $this->uploaderObject->close();
-            throw new CurlUploadException($this->uploaderObject->errorMessage);
+            throw new CurlUploadException($this->uploaderObject->getMessage());
         }
         return true;
     }
 
-    protected function checkMime()
+    private function checkMime()
     {
         if ($this->checkMimeType($this->uploaderObject->getMime())) {
             $this->fileObject->setMimeType(self::$mime[$this->uploaderObject->getMime()]);
@@ -35,7 +63,16 @@ class CurlUploadService extends AbstractUploadService implements UploadServiceIn
         return false;
     }
 
-    public function saveFile($url, $path = null, $name = null)
+    private function checkMimeType($mime)
+    {
+        if (!in_array($mime, array_keys(self::$mime))) {
+            return false;
+        }
+        return true;
+
+    }
+
+    private function saveFile($url, $path = null, $name = null)
     {
         try {
             /**
@@ -59,13 +96,6 @@ class CurlUploadService extends AbstractUploadService implements UploadServiceIn
             $this->uploaderObject->close();
         } catch (CurlUploadException $exception) {
             throw $exception;
-        }
-    }
-
-    public function uploadFileFromUrl($url, $path = null, $name = null)
-    {
-        if ($this->checkUrl($url) && $this->checkMime()) {
-            $this->saveFile($url, $path, $name);
         }
     }
 

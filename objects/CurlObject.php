@@ -13,18 +13,11 @@ use Curl\Curl;
 class CurlObject extends Curl implements ObjectInterface
 {
 
-    protected $options = [
+    private $options = [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HEADER => true,
         CURLOPT_NOBODY => true
     ];
-
-    private function _initOptions()
-    {
-        foreach ($this->options as $option => $value) {
-            $this->setOpt($option, $value);
-        }
-    }
 
     public function __construct($base_url = null)
     {
@@ -38,5 +31,32 @@ class CurlObject extends Curl implements ObjectInterface
     public function getMime()
     {
         return $this->getInfo(CURLINFO_CONTENT_TYPE);
+    }
+
+    public function getMessage()
+    {
+        return $this->errorMessage;
+    }
+
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    public function close()
+    {
+        parent::close();
+    }
+
+    public function get($url)
+    {
+        parent::get($url);
+    }
+
+    private function _initOptions()
+    {
+        foreach ($this->options as $option => $value) {
+            $this->setOpt($option, $value);
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Saver\Services\System;
 
-class WindowsSystem extends AbstractSystem implements SystemInterface
+class WindowsSystem implements SystemInterface
 {
 
 }
