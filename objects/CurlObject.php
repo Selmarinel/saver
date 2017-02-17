@@ -48,11 +48,6 @@ class CurlObject extends Curl implements ObjectInterface
         parent::close();
     }
 
-    public function get($url)
-    {
-        parent::get($url);
-    }
-
     private function _initOptions()
     {
         foreach ($this->options as $option => $value) {

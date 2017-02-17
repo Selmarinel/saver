@@ -2,6 +2,8 @@
 
 namespace Saver\Services\Files;
 
+use Saver\Exceptions\MyException;
+
 class LocalFile implements FileInterface
 {
     private $fileHandler;
@@ -39,7 +41,7 @@ class LocalFile implements FileInterface
 
     public function init($path = null)
     {
-        $this->path = ($path) ?: getenv('TMP_DIR');
+        $this->path = ($path) ?: getenv('SAVER_TMP_DIR');
         $this->setFileHandler();
     }
 
@@ -48,6 +50,11 @@ class LocalFile implements FileInterface
         if ($this->fileHandler) {
             fclose($this->fileHandler);
         }
+    }
+
+    public function getFileHandler()
+    {
+        return $this->fileHandler;
     }
 
     private function generateMd5Name($name = null)
@@ -62,7 +69,12 @@ class LocalFile implements FileInterface
 
     private function setFileHandler()
     {
-        $this->fileHandler = fopen($this->getFullPath(), "w+");
+        try {
+            $this->fileHandler = fopen($this->getFullPath(), "w+");
+        } catch (MyException $myException) {
+            $myException->setLog();
+            throw $myException;
+        }
     }
 
 }

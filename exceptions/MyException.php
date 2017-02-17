@@ -15,7 +15,7 @@ class MyException extends \Exception implements ExceptionInterface
 
     private function getLogPath()
     {
-        return (getenv('LOG_PATH')) ?: __DIR__ . "/../logs/";
+        return (getenv('SAVER_LOG_PATH')) ?: __DIR__ . "/../logs/";
     }
 
     protected function setLogger(MyLoggerInterface $logger)

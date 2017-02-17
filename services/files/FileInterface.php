@@ -18,4 +18,6 @@ interface FileInterface
     public function setMimeType($mime);
 
     public function getMimeType();
+
+    public function getFileHandler();
 }

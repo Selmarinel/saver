@@ -2,6 +2,7 @@
 
 namespace Saver\Services\Upload;
 
+use Saver\Exceptions\MyException;
 use Saver\Objects\ObjectInterface;
 use Saver\Services\Files\FileInterface;
 use Saver\Objects\CurlObject;
@@ -45,6 +46,9 @@ class CurlUploadService implements UploadServiceInterface
 
     private function checkUrl($url)
     {
+        if (!$url) {
+            return false;
+        }
         $this->uploaderObject->get($url);
         if ($this->uploaderObject->getError()) {
             $this->uploaderObject->close();
@@ -78,12 +82,11 @@ class CurlUploadService implements UploadServiceInterface
             /**
              * hack
              */
-            $this->fileSystem = new WindowsSystem();
+//            $this->fileSystem = new WindowsSystem();
             /***************************************/
 
             $this->fileObject->setFileName($name);
             $this->fileObject->init($path);
-
             $this->uploaderObject->setOpts([
                 CURLOPT_URL => $url,
                 CURLOPT_FILE => $this->fileObject->getFileHandler(),
@@ -96,6 +99,8 @@ class CurlUploadService implements UploadServiceInterface
             $this->uploaderObject->close();
         } catch (CurlUploadException $exception) {
             throw $exception;
+        } catch (MyException $myException) {
+            throw $myException;
         }
     }
 
